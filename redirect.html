@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <title>Precision</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+  <style>
+    p{
+      color: red;
+      vertical-align: middle;
+      text-align:center;
+      font-size: 1.5em;
+      border-style: double;
+      width: fit-content;
+      border-color: black;
+      padding-top: 30px;
+      padding-bottom: 30px;
+      padding-left: 30px;
+      padding-right: 30px;
+      margin:0 auto;
+      
+    }
+
+  </style>
+</head>
+<body>
+    <script>
+        var inputTest = localStorage.getItem('objectToPass');
+        var displayData = inputTest;
+        localStorage.removeItem( 'objectToPass' ); // Clear the localStorage
+        let ss=displayData
+        let n=ss.length
+        let laz=0
+        let c=''
+        let lim=''
+        for(let i=0;i<n;++i)
+        {
+            if(ss[i]=='*')
+            {
+                laz=i
+                break
+            }   
+            c+=ss[i]
+        }
+        for(let i=laz+1;i<n;++i)
+        {
+            lim+=ss[i]
+        }
+        let p=new Array()
+        let v=new Array()
+        let cnt=0
+        v.push(1)
+        for(let i=1;i<500000;++i)
+        {
+            v.push(1)
+        }
+        p[0]=0
+        v[1]=0
+        for(let i=2;i<500000;++i)
+        {
+            if(v[i]==1) p[++cnt]=i
+            for(let j=1;j<=cnt&&i*p[j]<500000;++j)
+            {
+                v[i*p[j]]=0
+                if(i%p[j]==0)   
+                    break
+            }
+        }
+        let pp=new Array()
+        pp.push(0)
+        for(let i=1;i<=cnt;++i)
+        {
+            pp.push(Math.sqrt(p[i]))
+        }
+
+
+        //1.
+        for(let i=1;i<=cnt;++i)
+        {
+            if(Math.abs(c-pp[i])<=lim)   
+            {
+                document.write(`<p>\\(\\sqrt{${p[i]}}=${pp[i]}…\\)</p>`)
+                document.write('<br/>')
+            }
+        }    
+
+        //2.
+        let c2=c
+        c2=Number(c2)
+        for(let j=2;j<=100;++j)
+        {
+            
+            c2 = c2 + Number(c)
+
+            for(let i=1;i<=cnt;++i)
+            {
+                if(Math.abs(c2-pp[i])<=lim)
+                {
+                    document.write(`<p>\\(\\frac{\\sqrt{${p[i]}}}{${j}}=${pp[i]/j}…\\)</p>`)
+                    document.write('<br/>')
+                }
+            }
+        }
+
+
+
+        //3.
+        for(let i=1;i<=cnt;++i)
+        {
+            let cc=Number(pp[i])
+            for(let j=2;j<=100;++j)
+            {     
+                cc=cc+Number(pp[i])
+                if(Math.abs(c-cc)<=lim)   
+                {
+                    document.write(`<p>\\(${j}\\sqrt{${p[i]}}=${pp[i]*j}…\\)</p>`)
+                    document.write('<br/>')
+                }
+            }
+        }
+
+        //4.
+
+        for(let n=0;n<=0;++n)
+            for(let i=n*100+1;i<=(n+1)*100;++i)
+                for(let j=i+1;j<=(n+1)*100;++j)
+                {
+                    if(Math.abs(pp[i]+pp[j]-c)<=lim)
+                    {
+                        document.write(`<p>\\(\\sqrt{${p[[i]]}}+\\sqrt{${p[j]}}=${pp[i]+pp[j]}…\\)</p>`)  
+                        document.write('<br/>')
+                        
+                    }
+                }
+
+        //5.
+        const pi=Math.PI
+        const e=Math.E
+        let laz1=0
+        for(let i=1;i<=10;++i)
+        {
+            let tmp=Math.pow(pi,i);
+            let ttmp=c*1.0;
+            // ttmp=Number(ttmp)
+            for(let j=1;j<=3000;++j)
+            {
+                if(Math.abs(ttmp-tmp)<=lim)
+                {
+                    if(i!=1&&j!=1)
+                        document.write(`<p>\\(\\frac{\\pi^{${i}}}{${j}}=${Math.pow(pi,i)/j}…\\)</p>`)
+                    else
+                        if(i==1&&j==1)
+                            document.write(`<p>\\(\\pi=${pi}…\\)</p>`)
+                        else
+                        if(i==1)
+                            document.write(`<p>\\(\\frac{\\pi}{${j}}=${pi/j}…\\)</p>`)
+                        else
+                            document.write(`<p>\\(\\pi^{${i}}=${Math.pow(pi,i)}…\\)</p>`)
+                    document.write('<br/>')
+                    laz1=1
+                }
+                ttmp = ttmp + Number(c)
+            }
+        }
+        if(laz1==0)
+        for(let i=1;i<=10;++i)
+        {
+            let tmp=Math.pow(pi,i);
+            let ttmp=tmp*1.0;
+            // ttmp=Number(ttmp)
+            for(let j=1;j<=3000;++j)
+            {
+                if(Math.abs(ttmp-c)<=lim)
+                {
+                    if(i!=1&&j!=1)
+                        document.write(`<p>\\(${j}\\pi^{${i}}}=${Math.pow(pi,i)*j}…\\)</p>`)
+                    else
+                        if(i==1&&j==1)
+                            document.write(`<p>\\(\\pi=${pi}…\\)</p>`)
+                        else
+                        if(i==1)
+                            document.write(`<p>\\(${j}\\pi=${pi*j}…\\)</p>`)
+                        else
+                            document.write(`<p>\\(\\pi^{${i}}=${Math.pow(pi,i)}…\\)</p>`)
+                    document.write('<br/>')
+                }
+                ttmp = ttmp + Number(tmp)
+            }
+        }
+
+
+        let laz2=0
+        for(let i=1;i<=10;++i)
+        {
+            let tmp=Math.pow(e,i);
+            let ttmp=c*1.0;
+            // ttmp=Number(ttmp)
+            for(let j=1;j<=3000;++j)
+            {
+                if(Math.abs(ttmp-tmp)<=lim)
+                {
+                    if(i!=1&&j!=1)
+                        document.write(`<p>\\(\\frac{e^{${i}}}{${j}}=${Math.pow(e,i)/j}…\\)</p>`)
+                    else
+                        if(i==1&&j==1)
+                            document.write(`<p>\\(e=${e}…\\)</p>`)
+                        else
+                        if(i==1)
+                            document.write(`<p>\\(\\frac{e}{${j}}=${e/j}…\\)</p>`)
+                        else
+                            document.write(`<p>\\(e^{${i}}=${Math.pow(e,i)}…\\)</p>`)
+                    document.write('<br/>')
+                    laz2=1
+                }
+                ttmp = ttmp + Number(c)
+            }
+        }
+        if(laz2==0)
+        for(let i=1;i<=10;++i)
+        {
+            let tmp=Math.pow(e,i);
+            let ttmp=tmp*1.0;
+            // ttmp=Number(ttmp)
+            for(let j=1;j<=3000;++j)
+            {
+                if(Math.abs(ttmp-c)<=lim)
+                {
+                    if(i!=1&&j!=1)
+                        document.write(`<p>\\(${j}e^{${i}}}=${Math.pow(e,i)*j}…\\)</p>`)
+                    else
+                        if(i==1&&j==1)
+                            document.write(`<p>\\(e=${e}…\\)</p>`)
+                        else
+                        if(i==1)
+                            document.write(`<p>\\(${j}e=${e*j}…\\)</p>`)
+                        else
+                            document.write(`<p>\\(e^{${i}}=${Math.pow(e,i)}…\\)</p>`)
+                    document.write('<br/>')
+                }
+                ttmp = ttmp + Number(tmp)
+            }
+        }
+      </script>
+</body>
+</html>
